@@ -361,18 +361,18 @@ function Invoke-McpInstall {
     }
     
     # Find required tarballs
-    $filesystemTgz = Get-ChildItem -Path $packagesDir -Filter "@modelcontextprotocol*server-filesystem*.tgz" | Select-Object -First 1
-    $memoryTgz = Get-ChildItem -Path $packagesDir -Filter "@modelcontextprotocol*server-memory*.tgz" | Select-Object -First 1
-    $claudeCodeTgz = Get-ChildItem -Path $packagesDir -Filter "@anthropic-ai*claude-code*.tgz" | Select-Object -First 1
+    $filesystemTgz = Get-ChildItem -Path $packagesDir -Filter "modelcontextprotocol-server-filesystem-*.tgz" | Select-Object -First 1
+    $memoryTgz = Get-ChildItem -Path $packagesDir -Filter "modelcontextprotocol-server-memory-*.tgz" | Select-Object -First 1
+    $claudeCodeTgz = Get-ChildItem -Path $packagesDir -Filter "anthropic-ai-claude-code-*.tgz" | Select-Object -First 1
     
     if (-not $filesystemTgz) {
-        throw "Required tarball not found: @modelcontextprotocol/server-filesystem*.tgz in $packagesDir"
+        throw "Required tarball not found: modelcontextprotocol-server-filesystem-*.tgz in $packagesDir"
     }
     if (-not $memoryTgz) {
-        throw "Required tarball not found: @modelcontextprotocol/server-memory*.tgz in $packagesDir"
+        throw "Required tarball not found: modelcontextprotocol-server-memory-*.tgz in $packagesDir"
     }
     if (-not $claudeCodeTgz) {
-        throw "Required tarball not found: @anthropic-ai/claude-code*.tgz in $packagesDir"
+        throw "Required tarball not found: anthropic-ai-claude-code-*.tgz in $packagesDir"
     }
     
     $mcpDir = Join-Path $StackRoot "mcp"
