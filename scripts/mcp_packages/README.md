@@ -5,15 +5,15 @@ This directory should contain the following pinned .tgz tarballs for offline MCP
 ## Required Packages
 
 1. **@modelcontextprotocol/server-filesystem**
-   - Pattern: `@modelcontextprotocol*server-filesystem*.tgz`
+   - Pattern: `modelcontextprotocol-server-filesystem-*.tgz`
    - Example: `modelcontextprotocol-server-filesystem-0.5.1.tgz`
 
 2. **@modelcontextprotocol/server-memory**
-   - Pattern: `@modelcontextprotocol*server-memory*.tgz`
+   - Pattern: `modelcontextprotocol-server-memory-*.tgz`
    - Example: `modelcontextprotocol-server-memory-0.5.1.tgz`
 
 3. **@anthropic-ai/claude-code**
-   - Pattern: `@anthropic-ai*claude-code*.tgz`
+   - Pattern: `anthropic-ai-claude-code-*.tgz`
    - Example: `anthropic-ai-claude-code-1.0.0.tgz`
 
 ## How to Obtain .tgz Files

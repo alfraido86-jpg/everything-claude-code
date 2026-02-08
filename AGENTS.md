@@ -130,9 +130,9 @@ ClaudeStack/
 PHASE 3 — OFFLINE MCP INSTALL (LOCAL TGZ ONLY; ABSOLUTE NODE)
 - Required packages directory: <script_dir>/mcp_packages/
 - Required pinned tarballs (FAIL FAST if missing):
-  - @modelcontextprotocol/server-filesystem*.tgz  (exactly ONE match)
-  - @modelcontextprotocol/server-memory*.tgz      (exactly ONE match)
-  - @anthropic-ai/claude-code*.tgz                (exactly ONE match)
+  - modelcontextprotocol-server-filesystem-*.tgz  (exactly ONE match)
+  - modelcontextprotocol-server-memory-*.tgz      (exactly ONE match)
+  - anthropic-ai-claude-code-*.tgz                (exactly ONE match)
 - Discover node.exe deterministically from absolute candidate paths; DO NOT use PATH.
 - Require npm-cli.js located relative to node.exe; DO NOT use npx.
 - All npm state must be stack-local:
