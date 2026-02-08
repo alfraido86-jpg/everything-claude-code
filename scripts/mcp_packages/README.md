@@ -41,6 +41,7 @@ scripts/
 
 ## Notes
 
-- The `Rebuild-ClaudeStack.ps1` script requires EXACTLY ONE matching tarball for each package
-- The script will fail fast if any required tarball is missing
+- The `Rebuild-ClaudeStack.ps1` script requires EXACTLY ONE matching tarball for each package pattern
+- If zero or more than one tarball matches a pattern, the script will fail fast with a clear error listing the matches
+- All tarballs are seeded into a local npm cache before offline install — no network access is required or attempted
 - Package names follow npm's tarball naming convention (scoped packages have `@` replaced with organization name)

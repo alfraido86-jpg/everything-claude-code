@@ -360,37 +360,66 @@ function Invoke-McpInstall {
         throw "Required packages directory not found: $packagesDir"
     }
     
-    # Find required tarballs
-    $filesystemTgz = Get-ChildItem -Path $packagesDir -Filter "modelcontextprotocol-server-filesystem-*.tgz" | Select-Object -First 1
-    $memoryTgz = Get-ChildItem -Path $packagesDir -Filter "modelcontextprotocol-server-memory-*.tgz" | Select-Object -First 1
-    $claudeCodeTgz = Get-ChildItem -Path $packagesDir -Filter "anthropic-ai-claude-code-*.tgz" | Select-Object -First 1
+    # Find required tarballs — enforce EXACTLY ONE match per pattern
+    $requiredPatterns = @{
+        "modelcontextprotocol-server-filesystem-*.tgz" = $null
+        "modelcontextprotocol-server-memory-*.tgz"     = $null
+        "anthropic-ai-claude-code-*.tgz"               = $null
+    }
     
-    if (-not $filesystemTgz) {
-        throw "Required tarball not found: modelcontextprotocol-server-filesystem-*.tgz in $packagesDir"
+    foreach ($pattern in @($requiredPatterns.Keys)) {
+        $matches = @(Get-ChildItem -Path $packagesDir -Filter $pattern)
+        if ($matches.Count -eq 0) {
+            throw "Required tarball not found: $pattern in $packagesDir (zero matches)"
+        }
+        if ($matches.Count -gt 1) {
+            $names = ($matches | ForEach-Object { $_.Name }) -join ', '
+            throw "Ambiguous tarball match for pattern '$pattern' in $packagesDir — expected exactly 1, found $($matches.Count): $names"
+        }
+        $requiredPatterns[$pattern] = $matches[0]
     }
-    if (-not $memoryTgz) {
-        throw "Required tarball not found: modelcontextprotocol-server-memory-*.tgz in $packagesDir"
-    }
-    if (-not $claudeCodeTgz) {
-        throw "Required tarball not found: anthropic-ai-claude-code-*.tgz in $packagesDir"
-    }
+    
+    $filesystemTgz = $requiredPatterns["modelcontextprotocol-server-filesystem-*.tgz"]
+    $memoryTgz     = $requiredPatterns["modelcontextprotocol-server-memory-*.tgz"]
+    $claudeCodeTgz = $requiredPatterns["anthropic-ai-claude-code-*.tgz"]
     
     $mcpDir = Join-Path $StackRoot "mcp"
     $npmCache = Join-Path $mcpDir ".npm-cache"
     $npmPrefix = Join-Path $mcpDir ".npm-prefix"
     $npmrc = Join-Path $mcpDir ".npmrc"
     
-    # Create npm config
+    # Create npm config — offline-only, all state stack-local
     @"
 cache=$($npmCache -replace '\\', '/')
 prefix=$($npmPrefix -replace '\\', '/')
-offline=true
 audit=false
 fund=false
 progress=false
 "@ | Set-Content -Path $npmrc -Encoding UTF8
     
-    # Install packages
+    # Seed the local npm cache from ALL tarballs before installing.
+    # This ensures --offline installs can resolve every dependency
+    # without any network access.
+    $allTarballs = @($filesystemTgz, $memoryTgz, $claudeCodeTgz)
+    foreach ($tgz in $allTarballs) {
+        Write-Status "Seeding npm cache from: $($tgz.Name)"
+        $cacheArgs = @(
+            $NpmCli,
+            "cache", "add",
+            $tgz.FullName,
+            "--cache=$npmCache",
+            "--userconfig=$npmrc"
+        )
+        $cacheResult = Invoke-NodeCommand -NodeExe $NodeExe -Arguments $cacheArgs -WorkingDirectory $mcpDir
+        if ($cacheResult.ExitCode -ne 0) {
+            Write-Status "npm cache add failed for $($tgz.Name)" "ERROR"
+            Write-Status "StdErr: $($cacheResult.StdErr)" "ERROR"
+            throw "Failed to seed npm cache from $($tgz.Name)"
+        }
+    }
+    Write-Status "npm cache seeded from all tarballs" "SUCCESS"
+    
+    # Install packages — fully offline from seeded cache
     $packages = @(
         @{ Name = "server-filesystem"; Tgz = $filesystemTgz.FullName }
         @{ Name = "server-memory"; Tgz = $memoryTgz.FullName }
@@ -411,6 +440,7 @@ progress=false
             "--no-fund",
             "--progress=false",
             "--ignore-scripts",
+            "--cache=$npmCache",
             "--userconfig=$npmrc",
             "--prefix=$installDir"
         )
