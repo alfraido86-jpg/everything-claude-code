@@ -86,6 +86,25 @@ function Convert-PathsToForwardSlashes {
 function Test-Prerequisites {
     Write-Status "=== PHASE 1: PREREQUISITES CHECK ===" "INFO"
     
+    # Check Claude Desktop
+    Write-Status "Checking for Claude Desktop..."
+    try {
+        $claudeInstalled = winget list --id Anthropic.Claude --exact 2>&1 | Select-String "Anthropic.Claude"
+        if ($claudeInstalled) {
+            Write-Status "Claude Desktop found" "SUCCESS"
+        }
+        else {
+            Write-Status "Claude Desktop not found. Installing via winget..." "WARN"
+            winget install Anthropic.Claude --accept-package-agreements --accept-source-agreements
+            Write-Status "Claude Desktop installed successfully" "SUCCESS"
+        }
+    }
+    catch {
+        Write-Status "Claude Desktop not found. Installing via winget..." "WARN"
+        winget install Anthropic.Claude --accept-package-agreements --accept-source-agreements
+        Write-Status "Claude Desktop installed successfully" "SUCCESS"
+    }
+    
     # Check Node.js
     Write-Status "Checking for Node.js..."
     if (-not (Test-CommandExists "node")) {
