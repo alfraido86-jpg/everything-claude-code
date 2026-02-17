@@ -106,10 +106,10 @@ sleep 2
 
 # LAST RESORT ONLY - Force kill if still running
 # (Check first to avoid data loss)
-if pgrep -f "Google Chrome" > /dev/null || pgrep chrome > /dev/null; then
+if pgrep -x "Google Chrome" > /dev/null 2>&1 || pgrep -x "chrome" > /dev/null 2>&1; then
     echo "Warning: Chrome still running, using force kill..."
-    pkill -9 "Google Chrome" 2>/dev/null || true
-    pkill -9 chrome 2>/dev/null || true
+    pkill -9 -x "Google Chrome" 2>/dev/null || true
+    pkill -9 -x "chrome" 2>/dev/null || true
 fi
 
 # Verify no Chrome processes running
@@ -193,7 +193,7 @@ ls -la "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts/"
 find "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts" -maxdepth 1 -name "*.json" -exec basename {} \;
 
 # Display and validate specific manifest (replace MANIFEST_NAME.json with actual filename)
-MANIFEST_FILE=$(find "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts" -maxdepth 1 -name "*claude*.json" -o -name "*anthropic*.json" 2>/dev/null | head -1)
+MANIFEST_FILE=$(find "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts" -maxdepth 1 \( -name "*claude*.json" -o -name "*anthropic*.json" \) 2>/dev/null | head -1)
 if [ -n "$MANIFEST_FILE" ]; then
     echo "Found manifest: $MANIFEST_FILE"
     cat "$MANIFEST_FILE" | python3 -m json.tool
@@ -211,7 +211,7 @@ ls -la "$HOME/.config/google-chrome/NativeMessagingHosts/"
 find "$HOME/.config/google-chrome/NativeMessagingHosts" -maxdepth 1 -name "*.json" -exec basename {} \;
 
 # Display and validate specific manifest (replace MANIFEST_NAME.json with actual filename)
-MANIFEST_FILE=$(find "$HOME/.config/google-chrome/NativeMessagingHosts" -maxdepth 1 -name "*claude*.json" -o -name "*anthropic*.json" 2>/dev/null | head -1)
+MANIFEST_FILE=$(find "$HOME/.config/google-chrome/NativeMessagingHosts" -maxdepth 1 \( -name "*claude*.json" -o -name "*anthropic*.json" \) 2>/dev/null | head -1)
 if [ -n "$MANIFEST_FILE" ]; then
     echo "Found manifest: $MANIFEST_FILE"
     cat "$MANIFEST_FILE" | python3 -m json.tool

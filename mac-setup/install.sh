@@ -165,8 +165,14 @@ else
         # Expand path for actual config (no shell expansion in JSON)
         PROJECTS_DIR="$HOME/projects"
         
-        # JSON-escape the path safely (handles spaces, quotes, etc.)
-        PROJECTS_DIR_JSON=$(python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$PROJECTS_DIR" 2>/dev/null || echo '"'$PROJECTS_DIR'"')
+        # JSON-escape the path safely (requires Python for proper escaping)
+        if command -v python3 &> /dev/null; then
+            PROJECTS_DIR_JSON=$(python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$PROJECTS_DIR")
+        else
+            echo -e "${RED}Error: Python 3 is required for safe JSON generation${NC}"
+            echo "Please install Python 3 and try again: brew install python3"
+            exit 1
+        fi
         
         # Create minimal config with expanded paths (not $HOME literals)
         cat > "$CONFIG_FILE" <<EOF
