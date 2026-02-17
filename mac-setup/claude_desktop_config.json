@@ -1,0 +1,153 @@
+{
+  "_comment_file_purpose": "Example Claude Desktop MCP configuration for Mac. Copy this to: ~/Library/Application Support/Claude/claude_desktop_config.json",
+  "_comment_security": "IMPORTANT: Replace all YOUR_*_HERE placeholders with your actual API keys. Never commit real API keys to git.",
+  "_comment_mac_paths": "This config uses Mac-specific paths. Filesystem MCP paths should point to your actual project directories.",
+  
+  "mcpServers": {
+    "_comment_github": "GitHub MCP - Access repositories, create PRs, manage issues. Required: GitHub Personal Access Token with repo scope.",
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_PAT_HERE"
+      },
+      "description": "GitHub operations - repos, PRs, issues, commits"
+    },
+
+    "_comment_filesystem": "Filesystem MCP - Local file access. SECURITY: Only grant access to specific directories you trust.",
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/yourname/Projects",
+        "/Users/yourname/Documents"
+      ],
+      "description": "Local filesystem operations (read, write, search)"
+    },
+
+    "_comment_memory": "Memory MCP - Persistent memory across Claude sessions. No API key needed.",
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "description": "Persistent memory across sessions - remembers context"
+    },
+
+    "_comment_notion": "Notion MCP - Access Notion databases and pages. Required: Notion Integration Token.",
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "@notionhq/client"],
+      "env": {
+        "NOTION_API_KEY": "YOUR_NOTION_TOKEN_HERE"
+      },
+      "description": "Notion workspace integration - read and update pages",
+      "_setup_instructions": "1. Go to https://www.notion.so/my-integrations 2. Create new integration 3. Copy Internal Integration Token 4. Share relevant pages with the integration"
+    },
+
+    "_comment_zapier": "Zapier MCP - Trigger Zapier workflows and automations. Required: Zapier API Key.",
+    "zapier": {
+      "command": "npx",
+      "args": ["-y", "@zapier/mcp-server"],
+      "env": {
+        "ZAPIER_API_KEY": "YOUR_ZAPIER_API_KEY_HERE"
+      },
+      "description": "Zapier automation triggers - connect 5,000+ apps",
+      "_setup_instructions": "1. Go to https://zapier.com/app/settings/api 2. Create API key 3. Paste here"
+    },
+
+    "_comment_supabase": "Supabase MCP - Database operations for your Supabase project. Required: Project Reference.",
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref=YOUR_SUPABASE_PROJECT_REF"
+      ],
+      "description": "Supabase database and storage operations",
+      "_setup_instructions": "1. Go to https://supabase.com/dashboard 2. Open your project 3. Copy project ref from Settings > General 4. Replace YOUR_SUPABASE_PROJECT_REF above"
+    },
+
+    "_comment_sequential_thinking": "Sequential Thinking MCP - Chain-of-thought reasoning. No API key needed.",
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Enhanced reasoning with step-by-step thinking"
+    },
+
+    "_comment_optional_servers": "Below are optional MCP servers you might want to add",
+
+    "_example_brave_search": {
+      "_comment": "Brave Search - Web search via Brave API. Uncomment and add API key to enable.",
+      "_command": "npx",
+      "_args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "_env": {
+        "BRAVE_API_KEY": "YOUR_BRAVE_API_KEY_HERE"
+      },
+      "_description": "Web search via Brave Search API",
+      "_setup": "Get API key from https://brave.com/search/api/"
+    },
+
+    "_example_postgres": {
+      "_comment": "PostgreSQL - Direct database access. Uncomment and configure connection string to enable.",
+      "_command": "npx",
+      "_args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "_env": {
+        "DATABASE_URL": "postgresql://user:password@localhost:5432/dbname"
+      },
+      "_description": "Direct PostgreSQL database access"
+    },
+
+    "_example_slack": {
+      "_comment": "Slack - Send messages and read channels. Uncomment and add bot token to enable.",
+      "_command": "npx",
+      "_args": ["-y", "@modelcontextprotocol/server-slack"],
+      "_env": {
+        "SLACK_BOT_TOKEN": "xoxb-your-token-here",
+        "SLACK_TEAM_ID": "YOUR_TEAM_ID"
+      },
+      "_description": "Slack workspace integration",
+      "_setup": "Create Slack app at https://api.slack.com/apps"
+    },
+
+    "_example_google_drive": {
+      "_comment": "Google Drive - Access Drive files. Requires OAuth setup.",
+      "_command": "npx",
+      "_args": ["-y", "@modelcontextprotocol/server-gdrive"],
+      "_description": "Google Drive file access",
+      "_setup": "Requires Google Cloud OAuth credentials"
+    }
+  },
+
+  "_config_notes": {
+    "context_window_warning": "⚠️ Each MCP server consumes context tokens. Keep under 10 active servers to preserve Claude's 200k context window.",
+    "token_usage_estimate": "5 servers = ~30k tokens | 10 servers = ~70k tokens | 20 servers = ~130k tokens",
+    
+    "how_to_disable": "To disable an MCP server without deleting it, add it to disabledMcpServers array in project-level .claude/settings.json",
+    
+    "project_specific_config": "You can override this global config per-project by creating .claude/claude_desktop_config.json in your project root",
+    
+    "restart_required": "After editing this file, quit and restart Claude Desktop for changes to take effect",
+    
+    "security_tips": [
+      "Store API keys in macOS Keychain when possible",
+      "Use read-only tokens where available",
+      "Regularly rotate API keys (every 90 days)",
+      "Never commit this file with real API keys to git"
+    ],
+    
+    "filesystem_security": [
+      "Only grant access to directories you actively use",
+      "NEVER grant access to: /, ~/.ssh, ~/Library, /System",
+      "Use separate filesystem MCP entries for different security levels"
+    ],
+
+    "recommended_starter_mcps": [
+      "github - Essential for code workflows",
+      "filesystem - Local project access",
+      "memory - Context persistence",
+      "sequential-thinking - Better reasoning"
+    ],
+
+    "backup_this_file": "Keep a backup of this config! Save to: ~/Documents/claude-backup/ or commit (without secrets) to a private repo"
+  }
+}

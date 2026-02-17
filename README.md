@@ -99,6 +99,46 @@ See the full changelog in [Releases](https://github.com/affaan-m/everything-clau
 
 ---
 
+## 🍎 Mac Premium Stack Setup
+
+**New to Mac or migrating from Windows?** We've got you covered with a complete, beginner-friendly setup guide.
+
+The **Premium Mac AI Stack Setup Guide** helps you establish Claude Desktop as your central AI command hub with seamless integration to Claude Code, VS Code Extension, and Claude Cowork. Includes ready-to-use configs and an automated installer.
+
+### Three Stack Tiers
+
+Choose the setup that matches your workflow:
+
+| Stack | Best For | Tools |
+|-------|----------|-------|
+| **Stack 1: Command Center** 🎛️ | Beginners, migration from Windows | Claude Desktop + MCP bridges |
+| **Stack 2: Multi-Agent Operator** ⚡ | Speed & parallel workflows | Multiple Claude Code agents + git worktrees |
+| **Stack 3: Full Ecosystem** 🚀 | Premium power users, teams | Cowork + plugins + full automation |
+
+### Quick Install
+
+```bash
+# Clone this repo (if you haven't already)
+git clone https://github.com/alfraido86-jpg/everything-claude-code.git
+cd everything-claude-code/mac-setup
+
+# Run the installer
+chmod +x install.sh
+./install.sh
+```
+
+The installer sets up:
+- ✅ Homebrew (macOS package manager)
+- ✅ Claude Desktop (central AI hub)
+- ✅ Claude Code CLI (terminal-based development)
+- ✅ VS Code + Claude Extension (in-editor assistance)
+- ✅ MCP server configs (GitHub, Notion, Supabase, etc.)
+- ✅ Apple Shortcuts suggestions (Cmd+Shift+C quick access)
+
+**[→ Read the full Mac Setup Guide](mac-setup/README.md)** | **[→ Compare Stack Tiers](mac-setup/stack-comparison.md)**
+
+---
+
 ## 🚀 Quick Start
 
 Get up and running in under 2 minutes:
