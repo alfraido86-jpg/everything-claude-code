@@ -445,9 +445,6 @@ claude mcp add-from-claude-desktop --verbose  # if available
 - [GitHub MCP Server](https://github.com/github/github-mcp-server)
 - [Model Context Protocol Specification](https://modelcontextprotocol.io)
 
-### Setup Guides
-- [Setting Up the Official GitHub MCP Server](https://dev.to/debs_obrien/setting-up-the-official-github-mcp-server-a-simple-guide-707)
-
 ### Security
 - See `SECURITY.md` in this directory for detailed security guidance
 

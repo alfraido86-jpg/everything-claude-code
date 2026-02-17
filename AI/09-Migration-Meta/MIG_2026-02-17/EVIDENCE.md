@@ -443,7 +443,9 @@ echo "Evidence collection complete!"
 echo "Location: $EVIDENCE_DIR"
 echo ""
 echo "To create archive:"
-echo "  tar -czf evidence-$(date +%Y%m%d-%H%M%S).tar.gz -C \"$HOME/evidence\" \"$(basename "$EVIDENCE_DIR")\""
+EVIDENCE_NAME="$(basename "$EVIDENCE_DIR")"
+ARCHIVE_NAME="evidence-${EVIDENCE_NAME}-$(date +%Y%m%d-%H%M%S).tar.gz"
+echo "  tar -czf \"$ARCHIVE_NAME\" -C \"$HOME/evidence\" \"$EVIDENCE_NAME\""
 ```
 
 ## Evidence Archive

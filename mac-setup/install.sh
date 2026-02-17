@@ -150,9 +150,9 @@ else
     echo ""
     echo "To create MCP configuration:"
     echo "1. Create directory: mkdir -p \"$CONFIG_DIR\""
-    echo "2. Review example config: ./claude_desktop_config.json"
+    echo "2. Review example config: ./claude_desktop_config.example.json"
     echo "3. Copy and customize for your needs"
-    echo "4. IMPORTANT: Remove all comments (lines starting with '_comment')"
+    echo "4. IMPORTANT: Remove any '_comment*' fields if you copied an annotated example"
     echo "5. Use environment variables for any secrets"
     echo ""
     read -p "Create minimal config now? (y/n) " -n 1 -r

@@ -26,6 +26,7 @@ mkdir -p "$BACKUP_DIR"
 # System-wide manifests
 if [ -d "/Library/Google/Chrome/NativeMessagingHosts" ]; then
     sudo cp -R "/Library/Google/Chrome/NativeMessagingHosts" "$BACKUP_DIR/system/"
+    sudo chown -R "$USER":"$(id -gn)" "$BACKUP_DIR/system/" 2>/dev/null || true
 fi
 
 # User-specific manifests
@@ -45,6 +46,7 @@ mkdir -p "$BACKUP_DIR"
 # System-wide manifests
 if [ -d "/etc/opt/chrome/native-messaging-hosts" ]; then
     sudo cp -R "/etc/opt/chrome/native-messaging-hosts" "$BACKUP_DIR/system/"
+    sudo chown -R "$USER":"$(id -gn)" "$BACKUP_DIR/system/" 2>/dev/null || true
 fi
 
 # User-specific manifests
