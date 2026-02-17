@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "filesystem": {
-      "comment": "Limited filesystem access - only grant access to specific project directories",
+      "_comment": "Limited filesystem access - only grant access to specific project directories",
       "command": "npx",
       "args": [
         "-y",
@@ -23,7 +23,7 @@
       ]
     },
     "memory": {
-      "comment": "Optional: Ephemeral storage for conversation context",
+      "_comment": "Optional: Ephemeral storage for conversation context",
       "command": "npx",
       "args": [
         "-y",
