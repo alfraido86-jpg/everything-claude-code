@@ -229,4 +229,4 @@ Configure MCP server with deny list:
 
 - [Claude Code Settings](https://code.claude.com/docs/de/settings)
 - [MCP Specification](https://modelcontextprotocol.io)
-- [Security Best Practices](../ACCEPTANCE_TEST.md)
+- [Acceptance Test Guide](./ACCEPTANCE_TEST.md)

@@ -1,46 +1,26 @@
 {
   "mcpServers": {
     "filesystem": {
-      "_comment": "Limited filesystem access - only grant access to specific project directories",
       "command": "npx",
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "$HOME/projects/allowed-directory"
+        "/ABSOLUTE/PATH/TO/YOUR/PROJECTS"
       ],
       "deny": [
         "Read(./.env)",
         "Read(./.env.*)",
         "Write(./.env)",
         "Read(./config/secrets.*)",
-        "Write(./config/secrets.*)",
-        "Read($HOME/.ssh/*)",
-        "Write($HOME/.ssh/*)",
-        "Read($HOME/.aws/*)",
-        "Write($HOME/.aws/*)",
-        "Read($HOME/.config/gcloud/*)",
-        "Write($HOME/.config/gcloud/*)"
+        "Write(./config/secrets.*)"
       ]
     },
     "memory": {
-      "_comment": "Optional: Ephemeral storage for conversation context",
       "command": "npx",
       "args": [
         "-y",
         "@modelcontextprotocol/server-memory"
       ]
     }
-  },
-  "_comment_security": "SECURITY WARNING: Never put API keys, tokens, or secrets in this configuration file!",
-  "_comment_secrets": "Use environment variables for sensitive data instead of hardcoding them here",
-  "_comment_example_env_vars": "For custom servers needing secrets, use: 'env': { 'API_KEY': '${API_KEY}' }",
-  "_comment_remote_integrations": "For GitHub, Notion, Zapier, Supabase, etc., use Claude Desktop's Connectors UI instead of JSON config",
-  "_comment_connectors_ui": "Open Claude Desktop → Settings → Connectors to set up remote integrations with proper OAuth flows",
-  "_comment_github_setup": "For GitHub integration, see: https://github.com/github/github-mcp-server",
-  "_comment_deny_lists": "Always use deny lists to protect sensitive files like .env, credentials, SSH keys",
-  "_comment_least_privilege": "Only grant MCPs the minimum access they need - restrict filesystem paths to specific directories",
-  "_comment_minimal_config": "This is a minimal safe example - only add MCPs you actually need",
-  "_comment_path_variables": "Use $HOME instead of hardcoded paths like /Users/username for portability",
-  "_comment_before_committing": "Before committing this file to version control, ensure no secrets are present!",
-  "_comment_version_control": "Consider adding claude_desktop_config.json to .gitignore if it contains environment-specific paths"
+  }
 }

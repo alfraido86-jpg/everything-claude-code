@@ -87,46 +87,57 @@ npm --version
 
 ## MCP Configuration Architecture
 
-### Understanding Local vs Remote MCPs
+### Understanding MCP Servers vs Connectors
 
-#### Local MCP Servers (JSON Configuration)
-**What**: Processes that run locally on your machine  
-**Configuration**: `claude_desktop_config.json` file  
+#### MCP Servers
+**What**: Tool servers (often local processes) that Claude can call. You configure them in `claude_desktop_config.json`.
+
 **Examples**: 
 - Filesystem access (controlled directories)
 - Local memory/cache servers
 - Local development tools
 - Database clients
+- GitHub MCP server (if you need custom tooling)
 
 **Characteristics**:
-- Run as local processes
-- Direct system/filesystem access
 - Configured via JSON file
+- Run as local processes (or connect to services via API)
 - Imported to Claude Code via CLI
+- Reproducible configuration
+- Full control over settings
 
-#### Remote MCP Servers (Connectors - UI Managed)
-**What**: Hosted integrations with cloud services  
-**Configuration**: Desktop UI → Settings → Connectors  
+#### Connectors
+**What**: First-party integrations configured in Claude Desktop's UI.
+
+**Configuration**: Desktop UI → Settings → Connectors
+
 **Examples**:
-- GitHub integration (repos, issues, PRs)
+- GitHub integration (if using the Connector)
 - Notion workspace access
 - Zapier workflows
 - Supabase projects
 - Slack workspaces
 
 **Characteristics**:
-- Connect to hosted services
-- API-based communication
-- OAuth/token authentication
-- Managed through Desktop UI, not JSON
-- Each requires separate authentication
+- Configure via Desktop UI
+- Often simpler to set up
+- OAuth-based authentication
+- Managed per-installation
 
-### Why This Distinction Matters
+### When to Use Which
 
-1. **Security**: Local MCPs need filesystem permissions; remote MCPs need API credentials
-2. **Configuration**: Local via JSON (version controllable); remote via UI (per-installation)
-3. **Portability**: Local configs can be shared; remote configs are user-specific
-4. **Maintenance**: Local MCPs installed once; remote Connectors need per-user setup
+**Use Connectors when:**
+- A connector exists for your service
+- You want simple, UI-guided setup
+- You don't need custom configuration
+
+**Use MCP Servers when:**
+- You need explicit control over configuration
+- You want reproducible configs (version control)
+- You need custom tooling or specialized access
+- A connector doesn't exist for your use case
+
+**Note**: Some services (like GitHub) may be available via **both** a Connector **and** an MCP server. Choose based on your needs - Connectors for simplicity, MCP servers for flexibility and control.
 
 ## Local MCP Configuration
 
@@ -139,11 +150,14 @@ $HOME/Library/Application Support/Claude/claude_desktop_config.json
 
 ### Minimal Safe Example Configuration
 
-See `claude_desktop_config.json` in this directory for a minimal, safe example configuration.
+**Important**: The example config files use placeholder paths that you must replace.
 
-**Important**: 
-- Start with minimal configuration
-- Only add MCPs you actually need
+See `claude_desktop_config.json` for a clean, copy-paste ready config, or `claude_desktop_config.example.json` for an annotated version with detailed guidance.
+
+**Key Points**:
+- Replace `/ABSOLUTE/PATH/TO/YOUR/PROJECTS` with your actual project directory path
+- Do NOT use `$HOME` or other shell variables in JSON - they won't expand
+- Use absolute paths for all file/directory references
 - Never include API keys or secrets in the JSON file
 - Use environment variables for sensitive data
 
@@ -159,11 +173,13 @@ Provides controlled access to specific directories.
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "$HOME/projects/allowed-dir"]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/yourname/projects/allowed-dir"]
     }
   }
 }
 ```
+
+**Note**: Replace `/Users/yourname/projects/allowed-dir` with your actual absolute path.
 
 #### 2. Memory Server (Optional)
 Provides ephemeral storage for conversation context.
@@ -191,34 +207,62 @@ npx -y @modelcontextprotocol/server-filesystem --help
 npx -y @modelcontextprotocol/server-memory --help
 ```
 
-## Remote Connectors Setup (GitHub Example)
+## GitHub Integration Options
 
 ### GitHub MCP Server
 
 **Official Documentation**: [GitHub MCP Server README](https://github.com/github/github-mcp-server)
 
-**Recommended Approach**:
-1. Visit GitHub's official MCP Server repository
-2. Follow their verified setup instructions
-3. Configure via Claude Desktop Connectors UI, not JSON
-4. Authenticate using GitHub OAuth
+GitHub integration can be set up via **either** a Connector **or** an MCP server, depending on your needs:
 
-**Setup Steps** (refer to official docs for current procedure):
+#### Option 1: GitHub Connector (Simpler)
+
+**Best for**: Simple access to GitHub data without custom tooling needs
+
+**Setup Steps**:
 1. Open Claude Desktop → Settings → Connectors
 2. Find GitHub in available connectors
 3. Click "Connect" and follow authentication flow
 4. Grant appropriate repository access
 5. Test connection
 
-**Important**: Do NOT attempt to configure GitHub MCP via JSON config file. Use the Connectors UI for proper OAuth flow.
+**Advantages**: Simple UI-guided setup, OAuth authentication, no JSON config needed
 
-### Other Remote Integrations
+#### Option 2: GitHub MCP Server (More Control)
 
-Similarly, for Notion, Zapier, Supabase, etc.:
-- Configure via Desktop Connectors UI
-- Follow each service's official setup guide
-- Authenticate separately for each service
-- Never put API keys in JSON files
+**Best for**: Custom tooling needs, reproducible configuration, explicit control
+
+**Setup**:
+1. Follow the [official GitHub MCP Server documentation](https://github.com/github/github-mcp-server)
+2. Configure in `claude_desktop_config.json` like any other MCP server
+3. Store GitHub token in environment variables (never in JSON)
+4. Import to Claude Code if needed
+
+**Example configuration** (with token in environment):
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+**Security**: Set `GITHUB_TOKEN` environment variable separately - never hardcode tokens in JSON.
+
+### Other Service Integrations
+
+For Notion, Zapier, Supabase, etc.:
+- Check if a Connector exists (Settings → Connectors)
+- If yes: Use the Connector for simplicity
+- If no, or if you need custom control: Look for an MCP server
+- Always follow each service's official setup guide
+- Never put API keys directly in JSON files
 
 ## Importing Configuration to Claude Code
 

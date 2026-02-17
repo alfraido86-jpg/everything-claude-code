@@ -162,8 +162,14 @@ else
         mkdir -p "$CONFIG_DIR"
         chmod 700 "$CONFIG_DIR"
         
-        # Create minimal config without comments (which aren't valid JSON)
-        cat > "$CONFIG_FILE" << 'EOF'
+        # Expand path for actual config (no shell expansion in JSON)
+        PROJECTS_DIR="$HOME/projects"
+        
+        # JSON-escape the path safely (handles spaces, quotes, etc.)
+        PROJECTS_DIR_JSON=$(python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$PROJECTS_DIR" 2>/dev/null || echo '"'$PROJECTS_DIR'"')
+        
+        # Create minimal config with expanded paths (not $HOME literals)
+        cat > "$CONFIG_FILE" <<EOF
 {
   "mcpServers": {
     "filesystem": {
@@ -171,14 +177,14 @@ else
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "$HOME/projects"
+        ${PROJECTS_DIR_JSON}
       ],
       "deny": [
         "Read(./.env)",
         "Read(./.env.*)",
         "Write(./.env)",
-        "Read($HOME/.ssh/*)",
-        "Write($HOME/.ssh/*)"
+        "Read(./config/secrets.*)",
+        "Write(./config/secrets.*)"
       ]
     }
   }

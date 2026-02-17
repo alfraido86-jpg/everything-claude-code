@@ -89,15 +89,34 @@ cp -R "$HOME/.config/google-chrome/Default" "$PROFILE_BACKUP"
 **Critical**: Chrome must be fully closed for manifest changes to take effect.
 
 ```bash
-# macOS - Force quit Chrome
-pkill -9 "Google Chrome"
+# macOS - Try graceful quit first
+osascript -e 'tell application "Google Chrome" to quit' 2>/dev/null || true
+sleep 2
 
-# Linux - Force quit Chrome
-pkill -9 chrome
+# If still running, try normal termination
+pkill "Google Chrome" 2>/dev/null || true
+sleep 2
+
+# Linux - Try graceful quit
+if command -v wmctrl &> /dev/null; then
+    wmctrl -c "Google Chrome" 2>/dev/null || true
+fi
+pkill chrome 2>/dev/null || true
+sleep 2
+
+# LAST RESORT ONLY - Force kill if still running
+# (Check first to avoid data loss)
+if pgrep -f "Google Chrome" > /dev/null || pgrep chrome > /dev/null; then
+    echo "Warning: Chrome still running, using force kill..."
+    pkill -9 "Google Chrome" 2>/dev/null || true
+    pkill -9 chrome 2>/dev/null || true
+fi
 
 # Verify no Chrome processes running
-ps aux | grep -i chrome
+ps aux | grep -i chrome | grep -v grep
 ```
+
+**Note**: The script tries graceful quit first to avoid data loss. Force kill (-9) is only used as a last resort.
 
 ### 2. Install Claude Extension
 
@@ -170,8 +189,17 @@ google-chrome --version
 # List all native messaging hosts
 ls -la "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts/"
 
-# Display Claude manifest
-cat "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.anthropic.claude_native.json" | python3 -m json.tool
+# Find Claude-related manifests
+find "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts" -maxdepth 1 -name "*.json" -exec basename {} \;
+
+# Display and validate specific manifest (replace MANIFEST_NAME.json with actual filename)
+MANIFEST_FILE=$(find "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts" -maxdepth 1 -name "*claude*.json" -o -name "*anthropic*.json" 2>/dev/null | head -1)
+if [ -n "$MANIFEST_FILE" ]; then
+    echo "Found manifest: $MANIFEST_FILE"
+    cat "$MANIFEST_FILE" | python3 -m json.tool
+else
+    echo "No Claude manifest found"
+fi
 ```
 
 **Linux**:
@@ -179,9 +207,33 @@ cat "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.an
 # List all native messaging hosts
 ls -la "$HOME/.config/google-chrome/NativeMessagingHosts/"
 
-# Display Claude manifest
-cat "$HOME/.config/google-chrome/NativeMessagingHosts/com.anthropic.claude_native.json" | python3 -m json.tool
+# Find Claude-related manifests
+find "$HOME/.config/google-chrome/NativeMessagingHosts" -maxdepth 1 -name "*.json" -exec basename {} \;
+
+# Display and validate specific manifest (replace MANIFEST_NAME.json with actual filename)
+MANIFEST_FILE=$(find "$HOME/.config/google-chrome/NativeMessagingHosts" -maxdepth 1 -name "*claude*.json" -o -name "*anthropic*.json" 2>/dev/null | head -1)
+if [ -n "$MANIFEST_FILE" ]; then
+    echo "Found manifest: $MANIFEST_FILE"
+    cat "$MANIFEST_FILE" | python3 -m json.tool
+else
+    echo "No Claude manifest found"
+fi
 ```
+
+**Expected Manifest Structure** (name may vary):
+```json
+{
+  "name": "com.anthropic.claude_native",
+  "description": "Claude Native Messaging Host",
+  "path": "/path/to/claude/native/host",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://EXTENSION_ID_HERE/"
+  ]
+}
+```
+
+**Note**: The actual manifest filename and internal name may vary. Use the find commands above to locate it.
 
 ### 4. Verify Extension Permissions
 
