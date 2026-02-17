@@ -97,7 +97,7 @@ jobs:
           # Define patterns to search for
           patterns=(
             "ghp_[a-zA-Z0-9]{36}"  # GitHub Personal Access Token
-            "sk-[a-zA-Z0-9]{32,}"  # OpenAI/Anthropic API key
+            "sk-[a-zA-Z0-9_-]{43,}"  # OpenAI/Anthropic API key (including sk-proj- format)
             "AKIA[0-9A-Z]{16}"     # AWS Access Key
             "xoxb-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24}"  # Slack Bot Token
             "xoxp-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24}"  # Slack User Token
@@ -120,9 +120,7 @@ jobs:
             matches=$(grep -rE "$pattern" . \
               --exclude-dir=node_modules \
               --exclude-dir=.git \
-              --exclude-dir=.github \
               --exclude="*.log" \
-              --exclude="lint.yml" \
               2>/dev/null || true)
 
             if [ -n "$matches" ]; then
