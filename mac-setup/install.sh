@@ -158,7 +158,9 @@ else
     read -p "Create minimal config now? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
+        # Create directory with secure permissions
         mkdir -p "$CONFIG_DIR"
+        chmod 700 "$CONFIG_DIR"
         
         # Create minimal config without comments (which aren't valid JSON)
         cat > "$CONFIG_FILE" << 'EOF'
@@ -183,7 +185,11 @@ else
 }
 EOF
         
+        # Set secure permissions on config file
+        chmod 600 "$CONFIG_FILE"
+        
         echo -e "${GREEN}✓${NC} Minimal config created at: $CONFIG_FILE"
+        echo -e "${GREEN}✓${NC} Permissions set to 600 (user read/write only)"
         echo ""
         echo "NEXT STEPS:"
         echo "1. Edit the config to specify your actual project directory"
