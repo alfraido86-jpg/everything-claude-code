@@ -1,0 +1,44 @@
+{
+  "_comment_security": "⚠️ SECURITY WARNING: Never put API keys, tokens, or secrets in this configuration file!",
+  "_comment_secrets": "Use environment variables for sensitive data instead of hardcoding them here",
+  "_comment_paths": "⚠️ IMPORTANT: Replace /ABSOLUTE/PATH/... placeholders with actual absolute paths on your system",
+  "_comment_no_shell_expansion": "Note: $HOME and other shell variables do NOT expand in JSON config - use absolute paths",
+  "_comment_example_env_vars": "For custom servers needing secrets, use: 'env': { 'API_KEY': '${API_KEY}' }",
+  "_comment_connectors": "For some services like GitHub, you can use either Connectors (UI) or MCP servers (JSON config)",
+  "_comment_connectors_ui": "Connectors UI: Claude Desktop → Settings → Connectors (simpler for many services)",
+  "_comment_mcp_servers": "MCP servers: Configured here in JSON (more control, reproducible)",
+  "_comment_github_options": "GitHub specifically offers both options - Connector for simplicity, MCP server for custom tooling - see https://github.com/github/github-mcp-server",
+  "_comment_deny_lists": "Always use deny lists to protect sensitive files like .env, credentials, SSH keys",
+  "_comment_least_privilege": "Only grant MCPs the minimum access they need - restrict filesystem paths to specific directories",
+  "_comment_minimal_config": "This is a minimal safe example - only add MCPs you actually need",
+  "_comment_before_committing": "Before committing this file to version control, ensure no secrets are present!",
+  "_comment_version_control": "Consider adding claude_desktop_config.json to .gitignore if it contains environment-specific paths",
+  
+  "mcpServers": {
+    "filesystem": {
+      "_comment": "⚠️ Replace /ABSOLUTE/PATH/TO/YOUR/PROJECTS with your actual project directory path",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/ABSOLUTE/PATH/TO/YOUR/PROJECTS"
+      ],
+      "deny": [
+        "Read(./.env)",
+        "Read(./.env.*)",
+        "Write(./.env)",
+        "Read(./config/secrets.*)",
+        "Write(./config/secrets.*)"
+      ],
+      "_comment_deny_additional": "Add more deny patterns for your SSH keys, AWS credentials, etc. with absolute paths"
+    },
+    "memory": {
+      "_comment": "Optional: Ephemeral storage for conversation context",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    }
+  }
+}
