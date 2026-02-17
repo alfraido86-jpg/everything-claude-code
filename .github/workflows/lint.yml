@@ -41,7 +41,7 @@ jobs:
               echo "✅ Valid: $file"
             fi
           done < <(find . -name "*.json" -not -path "./node_modules/*" -not -path "./.git/*")
-          
+
           if [ $failed -eq 1 ]; then
             echo "JSON validation failed"
             exit 1
@@ -73,7 +73,7 @@ jobs:
               echo "✅ Passed: $file"
             fi
           done < <(find . -name "*.sh" -not -path "./node_modules/*" -not -path "./.git/*")
-          
+
           if [ $failed -eq 1 ]; then
             echo "shellcheck validation failed"
             exit 1
@@ -93,7 +93,7 @@ jobs:
         run: |
           echo "Scanning for secret patterns..."
           failed=0
-          
+
           # Define patterns to search for
           patterns=(
             "ghp_[a-zA-Z0-9]{36}"  # GitHub Personal Access Token
@@ -102,7 +102,7 @@ jobs:
             "xoxb-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24}"  # Slack Bot Token
             "xoxp-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24}"  # Slack User Token
           )
-          
+
           pattern_names=(
             "GitHub Personal Access Token"
             "OpenAI/Anthropic API Key"
@@ -110,12 +110,12 @@ jobs:
             "Slack Bot Token"
             "Slack User Token"
           )
-          
+
           # Search for each pattern
           for i in "${!patterns[@]}"; do
             pattern="${patterns[$i]}"
             name="${pattern_names[$i]}"
-            
+
             echo "Checking for: $name"
             matches=$(grep -rE "$pattern" . \
               --exclude-dir=node_modules \
@@ -124,18 +124,18 @@ jobs:
               --exclude="*.log" \
               --exclude="lint.yml" \
               2>/dev/null || true)
-            
+
             if [ -n "$matches" ]; then
               echo "❌ Found potential $name:"
               echo "$matches"
               failed=1
             fi
           done
-          
+
           if [ $failed -eq 1 ]; then
             echo ""
             echo "⚠️  Secret patterns detected! Please remove sensitive data before merging."
             exit 1
           fi
-          
+
           echo "✅ No secret patterns detected"
