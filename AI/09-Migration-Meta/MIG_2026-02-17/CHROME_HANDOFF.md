@@ -192,7 +192,8 @@ ls -la "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts/"
 # Find Claude-related manifests
 find "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts" -maxdepth 1 -name "*.json" -exec basename {} \;
 
-# Display and validate specific manifest (replace MANIFEST_NAME.json with actual filename)
+# Display and validate specific manifest
+# Note: Parentheses must be escaped with backslashes to group OR conditions properly
 MANIFEST_FILE=$(find "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts" -maxdepth 1 \( -name "*claude*.json" -o -name "*anthropic*.json" \) 2>/dev/null | head -1)
 if [ -n "$MANIFEST_FILE" ]; then
     echo "Found manifest: $MANIFEST_FILE"
@@ -210,7 +211,8 @@ ls -la "$HOME/.config/google-chrome/NativeMessagingHosts/"
 # Find Claude-related manifests
 find "$HOME/.config/google-chrome/NativeMessagingHosts" -maxdepth 1 -name "*.json" -exec basename {} \;
 
-# Display and validate specific manifest (replace MANIFEST_NAME.json with actual filename)
+# Display and validate specific manifest
+# Note: Parentheses must be escaped with backslashes to group OR conditions properly
 MANIFEST_FILE=$(find "$HOME/.config/google-chrome/NativeMessagingHosts" -maxdepth 1 \( -name "*claude*.json" -o -name "*anthropic*.json" \) 2>/dev/null | head -1)
 if [ -n "$MANIFEST_FILE" ]; then
     echo "Found manifest: $MANIFEST_FILE"
