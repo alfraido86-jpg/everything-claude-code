@@ -35,8 +35,8 @@ parse_required_vars() {
 # ─── Load existing .env ───────────────────────────────────────────────────────
 load_env() {
   if [[ -f "${ENV_FILE}" ]]; then
-    # shellcheck disable=SC1090
     set -a
+    # shellcheck disable=SC1090
     source "${ENV_FILE}"
     set +a
     OK ".env loaded from ${ENV_FILE}"

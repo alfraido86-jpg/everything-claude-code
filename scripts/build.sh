@@ -28,6 +28,7 @@ done
 # ─── Git SHA for artifact naming ──────────────────────────────────────────────
 GIT_SHA="$(git -C "${REPO_ROOT}" rev-parse --short HEAD 2>/dev/null || echo "unknown")"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
+export TIMESTAMP  # Used in artifact naming context
 
 # ─── npm install ──────────────────────────────────────────────────────────────
 echo ""

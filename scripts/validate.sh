@@ -145,6 +145,7 @@ echo -e "${BOLD}7. Environment File${NC}"
 if [[ -f "${REPO_ROOT}/.env" ]]; then
   pass ".env file exists"
   # Check permissions (should be 600) — portable check via ls
+  # shellcheck disable=SC2012
   ENV_PERMS="$(ls -l "${REPO_ROOT}/.env" | cut -c2-10)"
   if [[ "${ENV_PERMS}" == "rw-------" ]]; then
     pass ".env permissions are secure (600)"
