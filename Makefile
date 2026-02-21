@@ -19,17 +19,13 @@ LOG_FILE  := $(LOGS_DIR)/run-$(shell date +%Y%m%d-%H%M%S).log
 help:
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/## //' | column -t -s ':'
 
-## setup: Idempotent full environment setup (install deps, configure .env, build Docker)
+## setup: Idempotent full environment setup (install deps, configure .env)
 setup:
 	@echo "==> Installing Node dependencies..."
 	@npm ci --prefer-offline 2>/dev/null || npm install
 	@if [ ! -f .env ] && [ -f .env.example ]; then \
 		cp .env.example .env; \
 		echo "==> Copied .env.example → .env (fill in your secrets)"; \
-	fi
-	@if command -v docker >/dev/null 2>&1 && [ -f docker-compose.yml ]; then \
-		echo "==> Building Docker images..."; \
-		docker compose build --quiet; \
 	fi
 	@echo "==> Setup complete."
 
@@ -40,16 +36,13 @@ validate:
 	@node tests/run-all.js 2>&1 | tee $(LOG_FILE)
 	@echo "==> Validation complete. Log saved to $(LOG_FILE)"
 
-## build: Build artifacts (Node bundle / Docker image) into dist/
+## build: Prepare dist/ directory for release artifacts
 build:
 	@mkdir -p $(DIST_DIR)
 	@echo "==> Building artifacts..."
 	@GIT_SHA=$$(git rev-parse --short HEAD 2>/dev/null || echo "unknown"); \
-	BUNDLE=$(DIST_DIR)/everything-claude-code-$$GIT_SHA; \
-	echo "  Artifact prefix: $$BUNDLE"; \
-	if command -v docker >/dev/null 2>&1 && [ -f docker-compose.yml ]; then \
-		docker compose build; \
-	fi
+	echo "  git SHA: $$GIT_SHA"; \
+	echo "  Artifacts will land in $(DIST_DIR)/"
 	@echo "==> Build complete."
 
 ## package: Zip dist/ output into a release bundle named with the current git SHA

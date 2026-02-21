@@ -182,6 +182,8 @@ make validate
 
 This runs the full smoke-test suite and writes a timestamped log to `logs/`. Review any failures before approving the PR.
 
+> **CI note:** Every push to a `copilot/*` branch also triggers the `copilot-validate` job inside the unified `ci.yml` workflow, which runs `make setup && make validate` on `macos-latest` and uploads the `logs/` directory as a workflow artifact.
+
 ---
 
 ## Stage F — Iterate
@@ -230,9 +232,11 @@ This runs `git pull --rebase && make setup` to pick up any new dependencies or c
 
 ## Stage H — Build & Package
 
+This repo ships **plugins, agents, commands, and Markdown documentation** — not Docker images or compiled binaries.
+
 ```bash
-make build      # Compile / bundle / build Docker image
-make package    # Zip dist/ output into a release bundle
+make build      # Prepares dist/ directory and prints the git SHA
+make package    # Zips the repo source (excluding secrets and artifacts) into dist/
 ```
 
 Artifacts land in `dist/` with the git SHA in the filename, e.g.:
@@ -252,12 +256,9 @@ make validate   # Full smoke-test suite
 make logs       # Tail the latest audit log in logs/
 ```
 
-### Optional: push Docker image or upload release
+### Optional: upload release bundle
 
 ```bash
-# Push Docker image (requires Docker Hub or GHCR credentials in .env)
-docker push ghcr.io/alfraido86-jpg/everything-claude-code:latest
-
 # Upload release bundle to GitHub Releases (via gh CLI)
 gh release create v1.0.0 dist/*.zip --notes "Release notes here"
 ```
@@ -305,4 +306,3 @@ All `copilot/*` branches are automatically picked up by the `copilot-ci.yml` wor
 | `make setup` fails with "command not found" | Install `make` via `brew install make` |
 | `.env` not found | Copy `.env.example` → `.env` and fill in values |
 | CI fails on `make validate` | Check `logs/` for details; run `make validate` locally |
-| Docker build fails on Apple Silicon | Add `--platform linux/arm64` to Docker build command |
