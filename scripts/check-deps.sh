@@ -77,10 +77,10 @@ echo -e "${BOLD}Checking Node.js…${NC}"
 NODE_VERSION_FILE=""
 if [[ -f "${REPO_ROOT}/.nvmrc" ]]; then
   NODE_VERSION_FILE="${REPO_ROOT}/.nvmrc"
-  REQUIRED_NODE="$(cat "${NODE_VERSION_FILE}" | tr -d '[:space:]')"
+  REQUIRED_NODE="$(tr -d '[:space:]' < "${NODE_VERSION_FILE}")"
 elif [[ -f "${REPO_ROOT}/.node-version" ]]; then
   NODE_VERSION_FILE="${REPO_ROOT}/.node-version"
-  REQUIRED_NODE="$(cat "${NODE_VERSION_FILE}" | tr -d '[:space:]')"
+  REQUIRED_NODE="$(tr -d '[:space:]' < "${NODE_VERSION_FILE}")"
 else
   REQUIRED_NODE="20"
 fi
