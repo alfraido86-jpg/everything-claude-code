@@ -162,15 +162,10 @@ if [[ -f "$WORKFLOW" ]]; then
   else
     fail "Workflow missing copilot/** trigger"
   fi
-  if grep -q "copilot-validate" "$WORKFLOW"; then
-    ok "copilot-validate job present"
+  if grep -q "^  validate:" "$WORKFLOW"; then
+    ok "Workflow has a validate job"
   else
-    fail "copilot-validate job missing"
-  fi
-  if grep -q "make validate" "$WORKFLOW"; then
-    ok "Workflow runs 'make validate'"
-  else
-    fail "Workflow missing 'make validate' step"
+    fail "Workflow missing validate job"
   fi
 else
   fail "ci.yml not found"

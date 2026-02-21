@@ -77,21 +77,21 @@ function runTests() {
   console.log('\nCI Workflow Condition Logic:');
 
   function matchesCopilotRef(ref) {
-    // Simulates: startsWith(github.ref, 'refs/heads/copilot/')
-    //        ||  startsWith(github.head_ref, 'copilot/')
+    // Simulates the ci.yml trigger: branches include 'copilot/**'
+    // so both push.ref and pull_request.head.ref are matched.
     return ref.startsWith('refs/heads/copilot/') || ref.startsWith('copilot/');
   }
 
-  ok('refs/heads/copilot/issue-42 triggers copilot-validate', () => {
+  ok('refs/heads/copilot/issue-42 is a copilot/** branch (CI triggers)', () => {
     assert.ok(matchesCopilotRef('refs/heads/copilot/issue-42'));
   });
-  ok('copilot/fix-typo (head_ref) triggers copilot-validate', () => {
+  ok('copilot/fix-typo (head_ref) is a copilot/** branch (CI triggers)', () => {
     assert.ok(matchesCopilotRef('copilot/fix-typo'));
   });
-  ok('refs/heads/main does NOT trigger copilot-validate', () => {
+  ok('refs/heads/main is NOT a copilot/** branch', () => {
     assert.ok(!matchesCopilotRef('refs/heads/main'));
   });
-  ok('feature/my-task does NOT trigger copilot-validate', () => {
+  ok('feature/my-task is NOT a copilot/** branch', () => {
     assert.ok(!matchesCopilotRef('feature/my-task'));
   });
 

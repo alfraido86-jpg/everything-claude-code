@@ -55,7 +55,7 @@ build:
 package: build
 	@# Gate: only package when HEAD is a tagged commit
 	@GIT_TAG=$$(git tag --points-at HEAD 2>/dev/null | head -1); \
-	if [ -z "$$GIT_TAG" ] && [ "$$CI" != "true" ]; then \
+	if [ -z "$$GIT_TAG" ] && [ "$${CI:-}" != "true" ]; then \
 		echo ""; \
 		echo "⚠  HEAD is not tagged. Packaging anyway for local use."; \
 		echo "   For releases, tag first: git tag v$(VERSION) && git push --tags"; \
