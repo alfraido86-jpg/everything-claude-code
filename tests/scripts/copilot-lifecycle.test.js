@@ -12,7 +12,8 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+
+const isWindows = process.platform === 'win32';
 
 const ROOT = path.resolve(__dirname, '../../');
 
@@ -125,12 +126,16 @@ function runTests() {
       assert.ok(fs.existsSync(abs), `${rel} not found`);
     });
     ok(`${rel} is executable`, () => {
+      if (isWindows) {
+        // Windows does not track Unix execute bits; skip this assertion
+        return;
+      }
       // Check Unix execute bit (mode & 0o111)
       const mode = fs.statSync(abs).mode;
       assert.ok(mode & 0o111, `${rel} is not executable`);
     });
     ok(`${rel} has correct shebang`, () => {
-      const first = fs.readFileSync(abs, 'utf8').split('\n')[0];
+      const first = fs.readFileSync(abs, 'utf8').split(/\r?\n/)[0];
       assert.strictEqual(first, '#!/usr/bin/env bash', `Bad shebang: '${first}'`);
     });
     ok(`${rel} uses set -euo pipefail`, () => {
