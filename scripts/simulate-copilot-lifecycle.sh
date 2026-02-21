@@ -108,7 +108,7 @@ else
 fi
 
 if [[ -f "VERSION" ]]; then
-  VERSION=$(cat VERSION | tr -d '[:space:]')
+  VERSION=$(tr -d '[:space:]' < VERSION)
   ok "VERSION file present: $VERSION"
 else
   fail "VERSION file missing"

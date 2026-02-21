@@ -6,6 +6,7 @@ SHELL := /bin/bash
 
 REPO_ROOT := $(shell pwd)
 LOGS_DIR  := $(REPO_ROOT)/logs
+VERSION   := $(shell cat VERSION 2>/dev/null | tr -d '[:space:]' || echo "0.0.0")
 
 # ─── Targets ──────────────────────────────────────────────────────────────────
 
