@@ -30,3 +30,7 @@ examples/sessions/*.tmp
 
 # Local drafts
 marketing/
+
+# Build artifacts and logs
+dist/
+logs/
