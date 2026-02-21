@@ -10,6 +10,12 @@ LOGS_DIR  := logs
 LOG_FILE  := $(LOGS_DIR)/run-$(shell date +%Y%m%d-%H%M%S).log
 
 # --------------------------------------------------------------------------- #
+# Version — read from VERSION file; fall back to git SHA when not present
+# --------------------------------------------------------------------------- #
+VERSION   := $(shell cat VERSION 2>/dev/null | tr -d '[:space:]' || git rev-parse --short HEAD 2>/dev/null || echo "0.0.0")
+GIT_SHA   := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+
+# --------------------------------------------------------------------------- #
 # Targets
 # --------------------------------------------------------------------------- #
 
@@ -40,16 +46,23 @@ validate:
 build:
 	@mkdir -p $(DIST_DIR)
 	@echo "==> Building artifacts..."
-	@GIT_SHA=$$(git rev-parse --short HEAD 2>/dev/null || echo "unknown"); \
-	echo "  git SHA: $$GIT_SHA"; \
-	echo "  Artifacts will land in $(DIST_DIR)/"
+	@echo "  Version : $(VERSION)"
+	@echo "  Git SHA : $(GIT_SHA)"
+	@echo "  Output  : $(DIST_DIR)/"
 	@echo "==> Build complete."
 
-## package: Zip dist/ output into a release bundle named with the current git SHA
+## package: Zip repo source into a versioned release bundle (requires a git tag on HEAD)
 package: build
+	@# Gate: only package when HEAD is a tagged commit
+	@GIT_TAG=$$(git tag --points-at HEAD 2>/dev/null | head -1); \
+	if [ -z "$$GIT_TAG" ] && [ "$$CI" != "true" ]; then \
+		echo ""; \
+		echo "⚠  HEAD is not tagged. Packaging anyway for local use."; \
+		echo "   For releases, tag first: git tag v$(VERSION) && git push --tags"; \
+		echo ""; \
+	fi
 	@mkdir -p $(DIST_DIR)
-	@GIT_SHA=$$(git rev-parse --short HEAD 2>/dev/null || echo "unknown"); \
-	BUNDLE=$(DIST_DIR)/everything-claude-code-$$GIT_SHA.zip; \
+	@BUNDLE=$(DIST_DIR)/everything-claude-code-$(VERSION)-$(GIT_SHA).zip; \
 	echo "==> Packaging → $$BUNDLE"; \
 	zip -r "$$BUNDLE" . \
 		--exclude "$(DIST_DIR)/*" \
