@@ -12,8 +12,11 @@ REMOTE="${GIT_REMOTE:-origin}"
 echo "==> Fetching from ${REMOTE}..."
 git fetch "${REMOTE}" --prune --quiet
 
-# Collect copilot/* branches from the remote
-mapfile -t BRANCHES < <(
+# Collect copilot/* branches from the remote (Bash 3.2+ compatible; no mapfile; < <() requires bash, not POSIX sh)
+BRANCHES=()
+while IFS= read -r line; do
+  BRANCHES+=("$line")
+done < <(
   git branch -r \
     | grep -E "^\s+${REMOTE}/copilot/" \
     | sed "s|^\s*${REMOTE}/||" \
