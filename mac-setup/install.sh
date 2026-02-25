@@ -3,7 +3,7 @@
 # This script provides guidance for installing Claude Desktop, Claude Code, and dependencies
 # It does NOT auto-copy configuration files to prevent accidental secret exposure
 
-set -e
+set -eo pipefail
 
 BOLD='\033[1m'
 RED='\033[0;31m'
@@ -42,7 +42,7 @@ echo ""
 # Check/Install Homebrew
 echo -e "${BOLD}Checking Homebrew...${NC}"
 if command_exists brew; then
-    echo -e "${GREEN}✓${NC} Homebrew is installed: $(brew --version | head -1)"
+    echo -e "${GREEN}✓${NC} Homebrew is installed: $(brew --version 2>/dev/null | head -1 || echo 'Unknown')"
 else
     echo -e "${YELLOW}Homebrew not found.${NC}"
     echo "Homebrew is recommended for managing dependencies."
