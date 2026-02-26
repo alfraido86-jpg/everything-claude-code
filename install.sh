@@ -127,7 +127,7 @@ if [[ "$TARGET" == "cursor" ]]; then
         fi
         if [[ -d "$CURSOR_SRC/rules" ]]; then
             found=false
-            for f in "$CURSOR_SRC/rules"/${lang}-*.md; do
+            for f in "${CURSOR_SRC}/rules/${lang}"-*.md; do
                 if [[ -f "$f" ]]; then
                     cp "$f" "$DEST_DIR/rules/"
                     found=true
