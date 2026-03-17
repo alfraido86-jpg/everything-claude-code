@@ -1,6 +1,7 @@
 {
+  "globs": ["**/*.md", "!**/node_modules/**"],
   "default": true,
-  "MD009": false,
+  "MD009": { "br_spaces": 2, "strict": false },
   "MD013": false,
   "MD033": false,
   "MD041": false,
@@ -11,6 +12,8 @@
   "MD036": false,
   "MD026": false,
   "MD029": false,
+  "MD056": false,
+  "MD058": false,
   "MD060": false,
   "MD024": {
     "siblings_only": true

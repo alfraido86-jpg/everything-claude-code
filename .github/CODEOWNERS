@@ -19,9 +19,6 @@
 Makefile                            @alfraido86-jpg
 VERSION                             @alfraido86-jpg
 
-# Configuration and Security — require explicit owner review
-/session-start.sh                   @alfraido86-jpg
-
 # Copilot branch automation — owner reviews all automation scripts
 scripts/                            @alfraido86-jpg
 

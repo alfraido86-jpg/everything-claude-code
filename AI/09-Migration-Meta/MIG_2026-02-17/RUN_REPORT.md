@@ -38,9 +38,9 @@ $HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts
 
 1. **Case-Insensitivity**: macOS filesystem can be case-insensitive or case-sensitive
    - `/Users/` vs `/users/` - using `$HOME` eliminates this issue
-   
+
 2. **Portability**: Scripts work across different users and systems
-   
+
 3. **Consistency**: Maintains consistent paths in documentation and scripts
 
 4. **Security**: Doesn't expose specific usernames in shared documentation

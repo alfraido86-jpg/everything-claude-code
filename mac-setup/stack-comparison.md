@@ -65,7 +65,7 @@ This document provides a factual comparison of tools in the Claude development s
 
 ### Claude Code
 
-**Installation**: 
+**Installation**:
 Follow official Claude Code documentation for current installation method
 
 **Updates**: Check via CLI or official documentation

@@ -92,7 +92,7 @@ npm --version
 #### MCP Servers
 **What**: Tool servers (often local processes) that Claude can call. You configure them in `claude_desktop_config.json`.
 
-**Examples**: 
+**Examples**:
 - Filesystem access (controlled directories)
 - Local memory/cache servers
 - Local development tools

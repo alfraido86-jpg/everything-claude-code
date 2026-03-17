@@ -158,7 +158,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '20.19.0'
 
       - name: Validate agents
         run: node scripts/ci/validate-agents.js
@@ -192,7 +192,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '20.19.0'
 
       - name: Run npm audit
         run: npm audit --audit-level=high
@@ -210,7 +210,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '20.19.0'
 
       - name: Install dependencies
         run: npm ci

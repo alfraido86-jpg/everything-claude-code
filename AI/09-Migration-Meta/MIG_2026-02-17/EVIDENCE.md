@@ -39,7 +39,7 @@ $HOME/temp/
 
 1. **Case-Insensitivity**: Prevents issues with macOS path case variations
    - `/Users/` vs `/users/` - `$HOME` eliminates ambiguity
-   
+
 2. **User-Independence**: Works for any user without modification
 
 3. **Script Portability**: Same scripts work across different environments
