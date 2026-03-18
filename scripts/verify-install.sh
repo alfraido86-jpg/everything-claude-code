@@ -6,18 +6,18 @@ PASS=0; FAIL=0; WARN=0
 check() {
   local desc="$1"; shift
   if "$@" >/dev/null 2>&1; then
-    echo "  PASS $desc"; ((PASS++))
+    echo "  PASS $desc"; PASS=$((PASS+1))
   else
-    echo "  FAIL $desc"; ((FAIL++))
+    echo "  FAIL $desc"; FAIL=$((FAIL+1))
   fi
 }
 
 warn_check() {
   local desc="$1"; shift
   if "$@" >/dev/null 2>&1; then
-    echo "  PASS $desc"; ((PASS++))
+    echo "  PASS $desc"; PASS=$((PASS+1))
   else
-    echo "  WARN $desc (non-critical)"; ((WARN++))
+    echo "  WARN $desc (non-critical)"; WARN=$((WARN+1))
   fi
 }
 
@@ -43,10 +43,10 @@ AGENT_JSON=$(node -p "require('./.claude-plugin/plugin.json').agents.length" 2>/
 check "VERSION matches package.json" diff <(node -p "require('./package.json').version") VERSION
 if [ "$AGENT_DISK" = "$AGENT_JSON" ]; then
   echo "  PASS Agent count synced ($AGENT_DISK on disk, $AGENT_JSON in manifest)"
-  ((PASS++))
+  PASS=$((PASS+1))
 else
   echo "  FAIL Agent count mismatch ($AGENT_DISK on disk, $AGENT_JSON in manifest)"
-  ((FAIL++))
+  FAIL=$((FAIL+1))
 fi
 
 echo ""
@@ -64,10 +64,10 @@ if [ -f "$DESKTOP_CFG" ]; then
   MCP_COUNT=$(python3 -c "import json; print(len(json.load(open('$DESKTOP_CFG')).get('mcpServers',{})))" 2>/dev/null || echo 0)
   if [ "$MCP_COUNT" -ge 3 ]; then
     echo "  PASS MCP servers configured ($MCP_COUNT)"
-    ((PASS++))
+    PASS=$((PASS+1))
   else
     echo "  WARN Only $MCP_COUNT MCP servers (expected 3+)"
-    ((WARN++))
+    WARN=$((WARN+1))
   fi
 fi
 
@@ -79,14 +79,14 @@ if [ -d "$EXT_DIR" ]; then
   EXT_COUNT=$((EXT_COUNT - 1))  # subtract the dir itself
   if [ "$EXT_COUNT" -ge 3 ]; then
     echo "  PASS Claude Extensions installed ($EXT_COUNT)"
-    ((PASS++))
+    PASS=$((PASS+1))
   else
     echo "  WARN Only $EXT_COUNT extensions found (expected 3+)"
-    ((WARN++))
+    WARN=$((WARN+1))
   fi
 else
   echo "  WARN Claude Extensions directory not found (reinstall from marketplace)"
-  ((WARN++))
+  WARN=$((WARN+1))
 fi
 
 echo ""

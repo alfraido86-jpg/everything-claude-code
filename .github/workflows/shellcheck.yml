@@ -39,4 +39,4 @@ jobs:
           fi
           echo "Checking files:"
           echo "$CHANGED"
-          echo "$CHANGED" | xargs -r shellcheck
+          echo "$CHANGED" | xargs shellcheck
