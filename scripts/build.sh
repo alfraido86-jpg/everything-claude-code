@@ -21,8 +21,10 @@ FAIL() { echo -e "${RED}❌${NC} $*"; }
 INFO() { echo -e "   $*"; }
 
 INSTALL_ONLY=false
+SKIP_INSTALL=false
 for arg in "$@"; do
   [[ "${arg}" == "--install-only" ]] && INSTALL_ONLY=true
+  [[ "${arg}" == "--skip-install" ]] && SKIP_INSTALL=true
 done
 
 # ─── Git SHA for artifact naming ──────────────────────────────────────────────
@@ -31,10 +33,14 @@ TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 export TIMESTAMP  # Used in artifact naming context
 
 # ─── npm install ──────────────────────────────────────────────────────────────
+cd "${REPO_ROOT}"
+
+if [[ "${SKIP_INSTALL}" == "true" ]]; then
+  INFO "Skipping npm install (--skip-install)"
+else
+
 echo ""
 echo -e "${BOLD}Installing npm dependencies…${NC}"
-
-cd "${REPO_ROOT}"
 
 # Determine package manager from environment or default to npm
 PM="${CLAUDE_CODE_PACKAGE_MANAGER:-npm}"
@@ -131,6 +137,8 @@ else
   INFO "Docker not available — skipping Docker builds"
 fi
 
+fi  # end SKIP_INSTALL guard
+
 # ─── Stop here if install-only ────────────────────────────────────────────────
 if [[ "${INSTALL_ONLY}" == "true" ]]; then
   OK "Install-only mode complete"
@@ -159,11 +167,11 @@ ARTIFACT_PATH="${DIST_DIR}/${ARTIFACT_NAME}"
 # Exclude common non-distributable paths
 zip -r "${ARTIFACT_PATH}" . \
   -x "*.git*" \
-  -x "*/node_modules/*" \
+  -x "node_modules/*" -x "*/node_modules/*" \
   -x ".env" -x ".env.*" -x "*/.env" -x "*/.env.*" \
-  -x "*/dist/*" \
-  -x "*/logs/*" \
-  -x "*/.DS_Store" \
+  -x "dist/*" -x "*/dist/*" \
+  -x "logs/*" -x "*/logs/*" \
+  -x ".DS_Store" -x "*/.DS_Store" \
   >/dev/null
 
 OK "Artifact created: ${ARTIFACT_PATH}"

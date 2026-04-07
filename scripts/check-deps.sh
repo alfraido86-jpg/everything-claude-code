@@ -88,6 +88,14 @@ fi
 if command -v node >/dev/null 2>&1; then
   CURRENT_NODE="$(node --version)"
   OK "Node.js ${CURRENT_NODE} is available"
+  # Enforce minimum version from REQUIRED_NODE (strip leading 'v')
+  CURRENT_MAJOR="${CURRENT_NODE#v}"
+  CURRENT_MAJOR="${CURRENT_MAJOR%%.*}"
+  REQUIRED_MAJOR="${REQUIRED_NODE%%.*}"
+  if [[ "${CURRENT_MAJOR}" -lt "${REQUIRED_MAJOR}" ]]; then
+    FAIL "Node.js ${CURRENT_NODE} does not meet minimum requirement (>=${REQUIRED_NODE})"
+    exit 1
+  fi
 else
   WARN "Node.js not found. Installing…"
   # Prefer nvm if available (nvm is a shell function, not a binary)

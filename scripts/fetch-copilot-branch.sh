@@ -55,7 +55,8 @@ else
 fi
 
 echo "==> Checking out '${SELECTED}'..."
-git checkout -B "${SELECTED}" "${REMOTE}/${SELECTED}"
+# Safe checkout: track remote branch without resetting existing local work
+git checkout "${SELECTED}" 2>/dev/null || git checkout -b "${SELECTED}" "${REMOTE}/${SELECTED}"
 
 echo ""
 echo "✓ Now on branch: $(git rev-parse --abbrev-ref HEAD)"
