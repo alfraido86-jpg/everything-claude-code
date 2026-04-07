@@ -104,7 +104,7 @@ run_stage "validate" "${SCRIPTS_DIR}/validate.sh"
 
 # ─── Stage 5: Build & Package ─────────────────────────────────────────────────
 if [[ "${SKIP_BUILD}" == "false" ]]; then
-  run_stage "build" "${SCRIPTS_DIR}/build.sh"
+  run_stage "build" "${SCRIPTS_DIR}/build.sh" --skip-install
 else
   log WARN "build" "Skipped (--skip-build)"
 fi

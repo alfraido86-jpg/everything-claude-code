@@ -124,8 +124,8 @@ jobs:
               2>/dev/null || true)
 
             if [ -n "$matches" ]; then
-              echo "❌ Found potential $name:"
-              echo "$matches"
+              echo "❌ Found potential $name in:"
+              echo "$matches" | sed 's/:.*/:*** REDACTED ***/'
               failed=1
             fi
           done
